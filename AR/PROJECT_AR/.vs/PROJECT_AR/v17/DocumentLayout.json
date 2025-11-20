@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "W:\\-UP_PC-\\5th_SEMESTER\\PROC_IMAGENES\\Proyecto_Final\\AR\\PROJECT_AR\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FF2C6C03-950D-48FA-97A4-EF62593774C3}|PROJECT_AR\\PROJECT_AR.vcxproj|W:\\-UP_PC-\\5th_SEMESTER\\PROC_IMAGENES\\Proyecto_Final\\AR\\PROJECT_AR\\PROJECT_AR\\PROJECT_AR.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FF2C6C03-950D-48FA-97A4-EF62593774C3}|PROJECT_AR\\PROJECT_AR.vcxproj|solutionrelative:PROJECT_AR\\PROJECT_AR.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PROJECT_AR.cpp",
+              "DocumentMoniker": "W:\\-UP_PC-\\5th_SEMESTER\\PROC_IMAGENES\\Proyecto_Final\\AR\\PROJECT_AR\\PROJECT_AR\\PROJECT_AR.cpp",
+              "RelativeDocumentMoniker": "PROJECT_AR\\PROJECT_AR.cpp",
+              "ToolTip": "W:\\-UP_PC-\\5th_SEMESTER\\PROC_IMAGENES\\Proyecto_Final\\AR\\PROJECT_AR\\PROJECT_AR\\PROJECT_AR.cpp",
+              "RelativeToolTip": "PROJECT_AR\\PROJECT_AR.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-20T23:27:44.229Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
