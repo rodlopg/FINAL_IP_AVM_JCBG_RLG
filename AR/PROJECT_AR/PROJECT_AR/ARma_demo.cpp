@@ -10,13 +10,14 @@ using namespace ARma;
 
 #define PAT_SIZE 64//equal to pattern_size variable (see below)
 #define SAVE_VIDEO 0 //if true, it saves the video in "output.avi"
-#define NUM_OF_PATTERNS 5// define the number of patterns you want to use |||||||| CHANGED
+#define NUM_OF_PATTERNS 5// define the number of patterns you want to use |||||||| CHANGED this
 
+//Changed all patterns into my patterns
 char filename1[30] = "pattern1.png";//id=1 SIUU
 char filename2[30] = "pattern6.png";//id=2 MAÑANA SERÁ OTRO DÍA
 char filename3[30] = "pattern7.png";//id=3 CRAZY DIAMOND
 char filename4[30] = "pattern5.png";//id=4 ALL WE NEED IS LOVE
-char filename5[30] = "pattern2.png";//id=5 DONT HATE ME
+char filename5[30] = "pattern2.png";//id=5 DONT HATE ME //Added this and not used
 
 static int loadPattern(const char* , std::vector<cv::Mat>& , int& );
 Mat imaNew(100, 100, CV_8UC3);
@@ -52,7 +53,7 @@ int main(int argc, char** argv){
 	loadPattern(filename3, patternLibrary, patternCount);
 	loadPattern(filename4, patternLibrary, patternCount);
 #endif
-	/*|||||||| CHANGED*/
+	/*|||||||| CHANGED*/ //ADDED THIS
 #if (NUM_OF_PATTERNS==5)
 	loadPattern(filename2, patternLibrary, patternCount);
 	loadPattern(filename3, patternLibrary, patternCount);

@@ -133,11 +133,12 @@ namespace ARma {
 
 
 		switch (id) {
+			//Changed some colors
 			case 1: { color = Scalar(255, 255, 10); break; }
 			case 2:	{ color = Scalar(0, 0, 255); break;	}
 			case 3:	{ color = Scalar(255, 255, 0); break;	}
-			case 4:	{ color = Scalar(255, 10, 255); break;	}
-			case 5: { color = Scalar(255, 100, 90); break; }
+			case 4:	{ color = Scalar(255, 10, 255); break;	} 
+			case 5: { color = Scalar(255, 100, 90); break; } //Added and not used
 			default:
 				break;
 
@@ -145,9 +146,10 @@ namespace ARma {
 
 		Mat modelPts;
 
+		//Added the switch statement
 		switch (id) {
 		case 2: {
-			//Cool S
+			//Cool S ADDED THIS WHOLE CASE
 			float w = size;          // width of body
 			float h = size * 1.6f;   // body height
 			float d = size * 0.4f;   // depth (thickness)
@@ -155,6 +157,7 @@ namespace ARma {
 
 			modelPts = (Mat_<float>(32, 3) <<
 				// line 1 front
+				//Added
 				c, c - (h/5), c,
 				c, c, c,
 				c + (w / 3), c + (h / 5), c,
@@ -167,6 +170,7 @@ namespace ARma {
 
 
 				// line 2 front
+				//Added
 				c, c + (2 * h / 5), c,
 				c, c + (h / 5), c,
 				c - (w / 3), c, c,
@@ -178,6 +182,7 @@ namespace ARma {
 				c + (w / 6), c + (h / 10), c,
 
 				// line 1 back
+				//Added
 				c, c - (h / 5), c-d,
 				c, c, c - d,
 				c + (w / 3), c + (h / 5), c - d,
@@ -190,6 +195,7 @@ namespace ARma {
 
 
 				// line 2 back
+				//Added
 				c, c + (2 * h / 5), c - d,
 				c, c + (h / 5), c - d,
 				c - (w / 3), c, c - d,
@@ -206,7 +212,7 @@ namespace ARma {
 			}
 			case 3: {
 				float s = size;
-
+				//Added this to put the corners of the image to draw
 				// Corners of the image in the pattern coordinate system
 				modelPts = (cv::Mat_<float>(4, 3) <<
 					0, 0, 0,
@@ -218,6 +224,7 @@ namespace ARma {
 			}
 			case 1: 
 			case 4: { 
+				//Moved the cube here
 				modelPts = (Mat_<float>(8, 3) <<
 					0, 0, 0,
 					size, 0, 0,
@@ -243,7 +250,7 @@ namespace ARma {
 			camera CS, and then, points are projected using camera parameters
 			(camera matrix, distortion matrix) from the camera 3D CS to its image plane
 			*/
-
+			//Added this trycatch
 			try {
 				projectPoints(modelPts1, rotVec, transVec, camMatrix, distMatrix, model2ImagePts);
 			}
@@ -252,6 +259,7 @@ namespace ARma {
 				return;
 			}
 
+			//Added this wole switch case to manage drawing of figures
 			switch (id) {
 			case 2: {
 				for (int i = 0; i < 7; i++) {
@@ -271,19 +279,20 @@ namespace ARma {
 				break;
 			}
 			case 3: {
-
+				//Added this to manage cases for the image and the negation of the image with button2 (to show image) and button 3 (to negate it)
 				if (button2) {
 					// Force to BGR (3 channels)
 					if (patternImage.channels() == 4)
-						cv::cvtColor(patternImage, patternImage, cv::COLOR_BGRA2BGR);
+						cv::cvtColor(patternImage, patternImage, cv::COLOR_BGRA2BGR); //Making sure the image has 3 channels (casting)
 					
-					if (button3) cv::bitwise_not(patternImage, useImage);
+					if (button3) cv::bitwise_not(patternImage, useImage); //Negating image
 					else useImage = patternImage.clone();
 					
 
 					std::vector<cv::Point2f> imgPts;
 					cv::projectPoints(modelPts, rotVec, transVec, camMatrix, distMatrix, imgPts);
 
+					//Setting coordinates relative to image size and transform it later
 					std::vector<cv::Point2f> srcCorners = {
 						{0, 0},
 						{(float)useImage.cols, 0},
@@ -299,6 +308,7 @@ namespace ARma {
 						cv::BORDER_CONSTANT);
 
 					// warped is 3-channel BGR
+					//Draw image
 					for (int y = 0; y < warped.rows; ++y)
 					{
 						for (int x = 0; x < warped.cols; ++x)
@@ -322,11 +332,11 @@ namespace ARma {
 				break;
 			}
 			case 1: {
-
+				//Moved the cube drawing into here
 				cout << rotVec << endl;
 				//draw cube, or whatever
 				int i;
-				Scalar ncolor = (button1) ? Scalar(122, 2, 255) : color;
+				Scalar ncolor = (button1) ? Scalar(122, 2, 255) : color; //Changes color if button 1 is activated
 				for (i = 0; i < 4; i++) {
 					cv::line(frame, model2ImagePts.at(i % 4), model2ImagePts.at((i + 1) % 4), ncolor, 3);
 				}
@@ -342,6 +352,7 @@ namespace ARma {
 			case 4: {
 				
 				cout << rotVec << endl;
+				//Draw cube for marker 4, color dont change
 				//draw cube, or whatever
 				int i;
 				for (i = 0; i < 4; i++) {
