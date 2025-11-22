@@ -12,11 +12,11 @@ using namespace ARma;
 #define SAVE_VIDEO 0 //if true, it saves the video in "output.avi"
 #define NUM_OF_PATTERNS 5// define the number of patterns you want to use |||||||| CHANGED
 
-char filename1[30] = "pattern1.png";//id=1
-char filename2[30] = "pattern7.png";//id=2
-char filename3[30] = "pattern3.png";//id=3
-char filename4[30] = "pattern4.png";//id=4
-char filename5[30] = "pattern2.png";//id=5 |||||||| CHANGED
+char filename1[30] = "pattern1.png";//id=1 SIUU
+char filename2[30] = "pattern6.png";//id=2 MAÑANA SERÁ OTRO DÍA
+char filename3[30] = "pattern7.png";//id=3 CRAZY DIAMOND
+char filename4[30] = "pattern5.png";//id=4 ALL WE NEED IS LOVE
+char filename5[30] = "pattern2.png";//id=5 DONT HATE ME
 
 static int loadPattern(const char* , std::vector<cv::Mat>& , int& );
 Mat imaNew(100, 100, CV_8UC3);
@@ -100,6 +100,7 @@ int main(int argc, char** argv){
 		double detectionTime = (toc-tic)/((double) getTickFrequency()*1000);
 		cout << "Detected Patterns: " << detectedPattern.size() << endl;
 		cout << "Detection time: " << detectionTime << endl;
+
 
 		//augment the input frame (and print out the properties of pattern if you want)
 		for (unsigned int i =0; i<detectedPattern.size(); i++){

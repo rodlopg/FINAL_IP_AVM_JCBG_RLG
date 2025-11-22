@@ -8,7 +8,9 @@ using namespace cv;
 using namespace std;
 
 namespace ARma {
-
+	// Load once (global static)
+	static cv::Mat patternImage = cv::imread("alexis_sentado.png", cv::IMREAD_UNCHANGED);
+	static Mat useImage = patternImage.clone();
 	Pattern::Pattern(double param1){
 		id =-1;
 		size = param1;
@@ -76,20 +78,65 @@ namespace ARma {
 
 	
 	/*|||||||| CHANGED*/
+
+	bool activated1 = false;
+	bool activated2 = false;
+	bool activated3 = false;
+	bool activated4 = false;
+
+	bool button1 = false;
+	bool button2 = false;
+	bool button3 = false;
+
+	int frames = 0;
+
+	int lifetime1 = 0;
+	int lifetime2 = 0;
+	int lifetime3 = 0;
+	int lifetime4 = 0;
+
+	const int MAX_LIFETIME = 5;   // how many frames a marker stays "active" after being seen
+
 	void Pattern::draw(Mat& frame, const Mat& camMatrix, const Mat& distMatrix)
 	{
 
 		Scalar color = Scalar(255, 255, 255);
 		//model 3D points: they must be projected to the image plane
 		int op = 0;
-		cv::Mat patternImage = cv::imread("alexis_sentado.png", cv::IMREAD_UNCHANGED);
+		
 		Mat modelPts1;
+		// decay lifetimes every frame
+		lifetime1 = std::max(0, lifetime1 - 1);
+		lifetime2 = std::max(0, lifetime2 - 1);
+		lifetime3 = std::max(0, lifetime3 - 1);
+		lifetime4 = std::max(0, lifetime4 - 1);
+
+		// refresh lifetime of detected marker
+		if (id == 1) lifetime1 = MAX_LIFETIME;
+		if (id == 2) lifetime2 = MAX_LIFETIME;
+		if (id == 3) lifetime3 = MAX_LIFETIME;
+		if (id == 4) lifetime4 = MAX_LIFETIME;
+
+		// marker is considered active if its lifetime is above 0
+		activated1 = (lifetime1 > 0);
+		activated2 = (lifetime2 > 0);
+		activated3 = (lifetime3 > 0);
+		activated4 = (lifetime4 > 0);
+
+		// compute buttons
+		button1 = activated1 && activated4;
+		button2 = activated3 && activated4;
+		button3 = activated2 && activated3;
+
+
+		
+
 
 		switch (id) {
-			case 1: { color = Scalar(255, 0, 255); break; }
-			case 2:	{color = Scalar(0, 0, 255); break;	}
-			case 3:	{color = Scalar(255, 255, 0); break;	}
-			case 4:	{color = Scalar(255, 0, 0); break;	}
+			case 1: { color = Scalar(255, 255, 10); break; }
+			case 2:	{ color = Scalar(0, 0, 255); break;	}
+			case 3:	{ color = Scalar(255, 255, 0); break;	}
+			case 4:	{ color = Scalar(255, 10, 255); break;	}
 			case 5: { color = Scalar(255, 100, 90); break; }
 			default:
 				break;
@@ -225,48 +272,73 @@ namespace ARma {
 			}
 			case 3: {
 
-				// Force to BGR (3 channels)
-				if (patternImage.channels() == 4)
-					cv::cvtColor(patternImage, patternImage, cv::COLOR_BGRA2BGR);
+				if (button2) {
+					// Force to BGR (3 channels)
+					if (patternImage.channels() == 4)
+						cv::cvtColor(patternImage, patternImage, cv::COLOR_BGRA2BGR);
+					
+					if (button3) cv::bitwise_not(patternImage, useImage);
+					else useImage = patternImage.clone();
+					
 
-				std::vector<cv::Point2f> imgPts;
-				cv::projectPoints(modelPts, rotVec, transVec, camMatrix, distMatrix, imgPts);
+					std::vector<cv::Point2f> imgPts;
+					cv::projectPoints(modelPts, rotVec, transVec, camMatrix, distMatrix, imgPts);
 
-				std::vector<cv::Point2f> srcCorners = {
-					{0, 0},
-					{(float)patternImage.cols, 0},
-					{(float)patternImage.cols, (float)patternImage.rows},
-					{0, (float)patternImage.rows}
-				};
+					std::vector<cv::Point2f> srcCorners = {
+						{0, 0},
+						{(float)useImage.cols, 0},
+						{(float)useImage.cols, (float)useImage.rows},
+						{0, (float)useImage.rows}
+					};
 
-				cv::Mat H = cv::getPerspectiveTransform(srcCorners, imgPts);
+					cv::Mat H = cv::getPerspectiveTransform(srcCorners, imgPts);
 
-				cv::Mat warped;
-				cv::warpPerspective(patternImage, warped, H, frame.size(),
-					cv::INTER_LINEAR,
-					cv::BORDER_CONSTANT);
+					cv::Mat warped;
+					cv::warpPerspective(useImage, warped, H, frame.size(),
+						cv::INTER_LINEAR,
+						cv::BORDER_CONSTANT);
 
-				// warped is 3-channel BGR
-				for (int y = 0; y < warped.rows; ++y)
-				{
-					for (int x = 0; x < warped.cols; ++x)
+					// warped is 3-channel BGR
+					for (int y = 0; y < warped.rows; ++y)
 					{
-						if (x < 0 || x >= frame.cols || y < 0 || y >= frame.rows)
-							continue;
+						for (int x = 0; x < warped.cols; ++x)
+						{
+							if (x < 0 || x >= frame.cols || y < 0 || y >= frame.rows)
+								continue;
+							cv::Vec3b px;
+							px = warped.at<cv::Vec3b>(y, x);
+							
 
-						cv::Vec3b px = warped.at<cv::Vec3b>(y, x);
+							// Skip black pixels (optional)
+							if (px == cv::Vec3b(0, 0, 0))
+								continue;
 
-						// Skip black pixels (optional)
-						if (px == cv::Vec3b(0, 0, 0))
-							continue;
-
-						frame.at<cv::Vec3b>(y, x) = px;
+							frame.at<cv::Vec3b>(y, x) = px;
+						}
 					}
 				}
+				
 
 				break;
 			}
-			case 1:
+			case 1: {
+
+				cout << rotVec << endl;
+				//draw cube, or whatever
+				int i;
+				Scalar ncolor = (button1) ? Scalar(122, 2, 255) : color;
+				for (i = 0; i < 4; i++) {
+					cv::line(frame, model2ImagePts.at(i % 4), model2ImagePts.at((i + 1) % 4), ncolor, 3);
+				}
+				for (i = 4; i < 7; i++) {
+					cv::line(frame, model2ImagePts.at(i % 8), model2ImagePts.at((i + 1) % 8), ncolor, 3);
+				}
+				cv::line(frame, model2ImagePts.at(7), model2ImagePts.at(4), ncolor, 3);
+				for (i = 0; i < 4; i++) {
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 4), ncolor, 3);
+				}
+				break;
+			}
 			case 4: {
 				
 				cout << rotVec << endl;
