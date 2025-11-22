@@ -9,8 +9,8 @@ using namespace std;
 
 namespace ARma {
 	// Load once (global static)
-	static cv::Mat patternImage = cv::imread("alexis_sentado.png", cv::IMREAD_UNCHANGED);
-	static Mat useImage = patternImage.clone();
+	static cv::Mat patternImage = cv::imread("alexis_sentado.png", cv::IMREAD_UNCHANGED); // Added
+	static Mat useImage = patternImage.clone(); //Added
 	Pattern::Pattern(double param1){
 		id =-1;
 		size = param1;
@@ -79,23 +79,23 @@ namespace ARma {
 	
 	/*|||||||| CHANGED*/
 
-	bool activated1 = false;
-	bool activated2 = false;
-	bool activated3 = false;
-	bool activated4 = false;
+	bool activated1 = false; //Added
+	bool activated2 = false; //Added
+	bool activated3 = false; //Added
+	bool activated4 = false; //Added
 
-	bool button1 = false;
-	bool button2 = false;
-	bool button3 = false;
+	bool button1 = false; //Added
+	bool button2 = false; //Added
+	bool button3 = false; //Added
 
-	int frames = 0;
+	int frames = 0; //Added
 
-	int lifetime1 = 0;
-	int lifetime2 = 0;
-	int lifetime3 = 0;
-	int lifetime4 = 0;
+	int lifetime1 = 0; //Added
+	int lifetime2 = 0; //Added
+	int lifetime3 = 0; //Added
+	int lifetime4 = 0; //Added
 
-	const int MAX_LIFETIME = 5;   // how many frames a marker stays "active" after being seen
+	const int MAX_LIFETIME = 5;   // how many frames a marker stays "active" after being seen //Added
 
 	void Pattern::draw(Mat& frame, const Mat& camMatrix, const Mat& distMatrix)
 	{
@@ -106,27 +106,27 @@ namespace ARma {
 		
 		Mat modelPts1;
 		// decay lifetimes every frame
-		lifetime1 = std::max(0, lifetime1 - 1);
-		lifetime2 = std::max(0, lifetime2 - 1);
-		lifetime3 = std::max(0, lifetime3 - 1);
-		lifetime4 = std::max(0, lifetime4 - 1);
+		lifetime1 = std::max(0, lifetime1 - 1); //Added
+		lifetime2 = std::max(0, lifetime2 - 1); //Added
+		lifetime3 = std::max(0, lifetime3 - 1); //Added
+		lifetime4 = std::max(0, lifetime4 - 1); //Added
 
 		// refresh lifetime of detected marker
-		if (id == 1) lifetime1 = MAX_LIFETIME;
-		if (id == 2) lifetime2 = MAX_LIFETIME;
-		if (id == 3) lifetime3 = MAX_LIFETIME;
-		if (id == 4) lifetime4 = MAX_LIFETIME;
+		if (id == 1) lifetime1 = MAX_LIFETIME; //Added
+		if (id == 2) lifetime2 = MAX_LIFETIME; //Added
+		if (id == 3) lifetime3 = MAX_LIFETIME; //Added
+		if (id == 4) lifetime4 = MAX_LIFETIME; //Added
 
 		// marker is considered active if its lifetime is above 0
-		activated1 = (lifetime1 > 0);
-		activated2 = (lifetime2 > 0);
-		activated3 = (lifetime3 > 0);
-		activated4 = (lifetime4 > 0);
+		activated1 = (lifetime1 > 0); //Added
+		activated2 = (lifetime2 > 0); //Added
+		activated3 = (lifetime3 > 0); //Added
+		activated4 = (lifetime4 > 0); //Added
 
 		// compute buttons
-		button1 = activated1 && activated4;
-		button2 = activated3 && activated4;
-		button3 = activated2 && activated3;
+		button1 = activated1 && activated4; //Added
+		button2 = activated3 && activated4; //Added
+		button3 = activated2 && activated3; //Added
 
 
 		
