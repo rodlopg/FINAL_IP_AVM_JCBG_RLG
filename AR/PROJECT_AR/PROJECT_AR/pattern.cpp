@@ -1,6 +1,7 @@
 #include "pattern.h"
 #include <iostream>
 #include "patterndetector.h"
+#include <opencv2/imgcodecs.hpp>
 
 
 using namespace cv;
@@ -81,6 +82,7 @@ namespace ARma {
 		Scalar color = Scalar(255, 255, 255);
 		//model 3D points: they must be projected to the image plane
 		int op = 0;
+		cv::Mat patternImage = cv::imread("alexis_sentado.png", cv::IMREAD_UNCHANGED);
 		Mat modelPts1;
 
 		switch (id) {
@@ -155,8 +157,19 @@ namespace ARma {
 
 			break;
 			}
+			case 3: {
+				float s = size;
+
+				// Corners of the image in the pattern coordinate system
+				modelPts = (cv::Mat_<float>(4, 3) <<
+					0, 0, 0,
+					s, 0, 0,
+					s, s, 0,
+					0, s, 0
+					);
+				break;
+			}
 			case 1: 
-			case 3: 
 			case 4: { 
 				modelPts = (Mat_<float>(8, 3) <<
 					0, 0, 0,
@@ -184,8 +197,13 @@ namespace ARma {
 			(camera matrix, distortion matrix) from the camera 3D CS to its image plane
 			*/
 
-			projectPoints(modelPts1, rotVec, transVec, camMatrix, distMatrix, model2ImagePts);
-			
+			try {
+				projectPoints(modelPts1, rotVec, transVec, camMatrix, distMatrix, model2ImagePts);
+			}
+			catch (const cv::Exception& e) {
+				std::cout << "[OpenCV Error] Case 3 failed: " << e.what() << std::endl;
+				return;
+			}
 
 			switch (id) {
 			case 2: {
@@ -205,8 +223,50 @@ namespace ARma {
 				}
 				break;
 			}
+			case 3: {
+
+				// Force to BGR (3 channels)
+				if (patternImage.channels() == 4)
+					cv::cvtColor(patternImage, patternImage, cv::COLOR_BGRA2BGR);
+
+				std::vector<cv::Point2f> imgPts;
+				cv::projectPoints(modelPts, rotVec, transVec, camMatrix, distMatrix, imgPts);
+
+				std::vector<cv::Point2f> srcCorners = {
+					{0, 0},
+					{(float)patternImage.cols, 0},
+					{(float)patternImage.cols, (float)patternImage.rows},
+					{0, (float)patternImage.rows}
+				};
+
+				cv::Mat H = cv::getPerspectiveTransform(srcCorners, imgPts);
+
+				cv::Mat warped;
+				cv::warpPerspective(patternImage, warped, H, frame.size(),
+					cv::INTER_LINEAR,
+					cv::BORDER_CONSTANT);
+
+				// warped is 3-channel BGR
+				for (int y = 0; y < warped.rows; ++y)
+				{
+					for (int x = 0; x < warped.cols; ++x)
+					{
+						if (x < 0 || x >= frame.cols || y < 0 || y >= frame.rows)
+							continue;
+
+						cv::Vec3b px = warped.at<cv::Vec3b>(y, x);
+
+						// Skip black pixels (optional)
+						if (px == cv::Vec3b(0, 0, 0))
+							continue;
+
+						frame.at<cv::Vec3b>(y, x) = px;
+					}
+				}
+
+				break;
+			}
 			case 1:
-			case 3:
 			case 4: {
 				
 				cout << rotVec << endl;
