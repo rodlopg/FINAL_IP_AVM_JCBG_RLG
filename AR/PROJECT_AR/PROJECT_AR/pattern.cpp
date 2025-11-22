@@ -74,7 +74,7 @@ namespace ARma {
 	}
 
 	
-
+	/*|||||||| CHANGED*/
 	void Pattern::draw(Mat& frame, const Mat& camMatrix, const Mat& distMatrix)
 	{
 
@@ -84,22 +84,97 @@ namespace ARma {
 		Mat modelPts1;
 
 		switch (id) {
-		case 1: { color = Scalar(255, 0, 255); break; }
-		case 2:	{color = Scalar(0, 0, 255); break;	}
-		case 3:	{color = Scalar(255, 255, 0); break;	}
-		case 4:	{color = Scalar(255, 0, 0); break;	}
-		default:
-			break;
+			case 1: { color = Scalar(255, 0, 255); break; }
+			case 2:	{color = Scalar(0, 0, 255); break;	}
+			case 3:	{color = Scalar(255, 255, 0); break;	}
+			case 4:	{color = Scalar(255, 0, 0); break;	}
+			case 5: { color = Scalar(255, 100, 90); break; }
+			default:
+				break;
+
 		}
-			Mat modelPts = (Mat_<float>(8, 3) <<
-				0, 0, 0,
-				size, 0, 0,
-				size, size, 0,
-				0, size, 0,
-				0, 0, -size,
-				size, 0, -size,
-				size, size, -size,
-				0, size, -size);
+
+		Mat modelPts;
+
+		switch (id) {
+		case 2: {
+			//Cool S
+			float w = size;          // width of body
+			float h = size * 1.6f;   // body height
+			float d = size * 0.4f;   // depth (thickness)
+			float c = 50;
+
+			modelPts = (Mat_<float>(32, 3) <<
+				// line 1 front
+				c, c - (h/5), c,
+				c, c, c,
+				c + (w / 3), c + (h / 5), c,
+				c + (w / 3), c + (2*h / 5), c,
+
+				c, c + (3 * h / 5), c,
+				c - (w / 3), c + (2 * h / 5), c,
+				c - (w / 3), c + (h / 5), c,
+				c - (w / 6), c + (h / 10), c,
+
+
+				// line 2 front
+				c, c + (2 * h / 5), c,
+				c, c + (h / 5), c,
+				c - (w / 3), c, c,
+				c - (w / 3), c - (h / 5), c,
+
+				c, c - (2*h / 5), c,
+				c + (w / 3), c - (h / 5), c,
+				c + (w / 3), c, c,
+				c + (w / 6), c + (h / 10), c,
+
+				// line 1 back
+				c, c - (h / 5), c-d,
+				c, c, c - d,
+				c + (w / 3), c + (h / 5), c - d,
+				c + (w / 3), c + (2 * h / 5), c - d,
+
+				c, c + (3 * h / 5), c - d,
+				c - (w / 3), c + (2 * h / 5), c - d,
+				c - (w / 3), c + (h / 5), c - d,
+				c - (w / 6), c + (h / 10), c - d,
+
+
+				// line 2 back
+				c, c + (2 * h / 5), c - d,
+				c, c + (h / 5), c - d,
+				c - (w / 3), c, c - d,
+				c - (w / 3), c - (h / 5), c - d,
+
+				c, c - (2 * h / 5), c - d,
+				c + (w / 3), c - (h / 5), c - d,
+				c + (w / 3), c, c - d,
+				c + (w / 6), c + (h / 10), c - d
+
+				);
+
+			break;
+			}
+			case 1: 
+			case 3: 
+			case 4: { 
+				modelPts = (Mat_<float>(8, 3) <<
+					0, 0, 0,
+					size, 0, 0,
+					size, size, 0,
+					0, size, 0,
+					0, 0, -size,
+					size, 0, -size,
+					size, size, -size,
+					0, size, -size);
+				break;
+			}
+			case 5: 
+			default:
+				break;
+		}
+
+			
 			modelPts.copyTo(modelPts1);
 
 			std::vector<cv::Point2f> model2ImagePts;
@@ -108,19 +183,50 @@ namespace ARma {
 			camera CS, and then, points are projected using camera parameters
 			(camera matrix, distortion matrix) from the camera 3D CS to its image plane
 			*/
+
 			projectPoints(modelPts1, rotVec, transVec, camMatrix, distMatrix, model2ImagePts);
-			cout << rotVec << endl;
-			//draw cube, or whatever
-			int i;
-			for (i = 0; i < 4; i++) {
-				cv::line(frame, model2ImagePts.at(i % 4), model2ImagePts.at((i + 1) % 4), color, 3);
+			
+
+			switch (id) {
+			case 2: {
+				for (int i = 0; i < 7; i++) {
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 1), Vec3b(200,200,0), 3);
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 16), color, 3);
+				}
+				for (int i = 8; i < 15; i++) {
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 1), Vec3b(200, 200, 0), 3);
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 16), color, 3);
+				}
+				for (int i = 16; i < 23; i++) {
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 1), Vec3b(200, 122, 0), 3);
+				}
+				for (int i = 24; i < 31; i++) {
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 1), Vec3b(200, 122, 0), 3);
+				}
+				break;
 			}
-			for (i = 4; i < 7; i++) {
-				cv::line(frame, model2ImagePts.at(i % 8), model2ImagePts.at((i + 1) % 8), color, 3);
+			case 1:
+			case 3:
+			case 4: {
+				
+				cout << rotVec << endl;
+				//draw cube, or whatever
+				int i;
+				for (i = 0; i < 4; i++) {
+					cv::line(frame, model2ImagePts.at(i % 4), model2ImagePts.at((i + 1) % 4), color, 3);
+				}
+				for (i = 4; i < 7; i++) {
+					cv::line(frame, model2ImagePts.at(i % 8), model2ImagePts.at((i + 1) % 8), color, 3);
+				}
+				cv::line(frame, model2ImagePts.at(7), model2ImagePts.at(4), color, 3);
+				for (i = 0; i < 4; i++) {
+					cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 4), color, 3);
+				}
+				break;
 			}
-			cv::line(frame, model2ImagePts.at(7), model2ImagePts.at(4), color, 3);
-			for (i = 0; i < 4; i++) {
-				cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i + 4), color, 3);
+			case 5: 
+			default:
+				break;
 			}
 
 			//draw the line that reflects the orientation. It indicates the bottom side of the pattern
