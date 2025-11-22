@@ -1,0 +1,23 @@
+# Visual Studio cache
+.vs/
+*.suo
+*.VC.db
+*.VC.opendb
+*.ipch
+ipch/
+*.cache
+*.pdb
+
+# Build directories
+Debug/
+Release/
+x64/
+x86/
+
+# Calibration images — DO NOT track
+Calibration_01/
+Calibration_02/
+
+# Output
+*.exe
+*.dll

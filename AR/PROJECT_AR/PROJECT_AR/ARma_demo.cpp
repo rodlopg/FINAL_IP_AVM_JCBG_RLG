@@ -15,7 +15,7 @@ using namespace ARma;
 char filename1[30] = "pattern1.png";//id=1
 char filename2[30] = "pattern2.png";//id=2
 char filename3[30] = "pattern3.png";//id=3
-char filename4[30] = "pattern4.png";//id=4
+char filename4[30] = "pattern7.png";//id=4
 
 static int loadPattern(const char* , std::vector<cv::Mat>& , int& );
 Mat imaNew(100, 100, CV_8UC3);
