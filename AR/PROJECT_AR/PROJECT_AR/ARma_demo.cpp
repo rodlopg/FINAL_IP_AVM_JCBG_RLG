@@ -14,10 +14,13 @@ using namespace ARma;
 
 //Changed all patterns into my patterns
 char filename1[30] = "pattern1.png";//id=1 SIUU
-char filename2[30] = "pattern6.png";//id=2 MA�ANA SER� OTRO D�A
+char filename2[30] = "pattern6.png";//id=2 MA�ANA SER� OTRO D�A
 char filename3[30] = "pattern7.png";//id=3 CRAZY DIAMOND
 char filename4[30] = "pattern5.png";//id=4 ALL WE NEED IS LOVE
 char filename5[30] = "pattern2.png";//id=5 DONT HATE ME //Added this and not used
+char filename6[30] = "pattern3.png"; //id=6 I LOVE CARS(para la imagen cayendo, extra #3)
+char filename7[30] = "pattern4.png"; //id=7 TYPE ____ (para los dígitos 0–9, extra #4)
+
 
 static int loadPattern(const char* , std::vector<cv::Mat>& , int& );
 Mat imaNew(100, 100, CV_8UC3);
@@ -37,29 +40,14 @@ int main(int argc, char** argv){
 	std::vector<Pattern> detectedPattern;
 	int patternCount=0;
 
-	/*create patterns' library using rotated versions of patterns 
-	*/
-	loadPattern(filename1, patternLibrary, patternCount);
-#if (NUM_OF_PATTERNS==2)
-	loadPattern(filename2, patternLibrary, patternCount);
-#endif
-#if (NUM_OF_PATTERNS==3)
-	loadPattern(filename2, patternLibrary, patternCount);
-	loadPattern(filename3, patternLibrary, patternCount);
-#endif
-	
-#if (NUM_OF_PATTERNS==4)
-	loadPattern(filename2, patternLibrary, patternCount);
-	loadPattern(filename3, patternLibrary, patternCount);
-	loadPattern(filename4, patternLibrary, patternCount);
-#endif
-	/*|||||||| CHANGED*/ //ADDED THIS
-#if (NUM_OF_PATTERNS==5)
-	loadPattern(filename2, patternLibrary, patternCount);
-	loadPattern(filename3, patternLibrary, patternCount);
-	loadPattern(filename4, patternLibrary, patternCount);
-	loadPattern(filename5, patternLibrary, patternCount);
-#endif
+	loadPattern(filename1, patternLibrary, patternCount); // id 1 → cubo + 5 imágenes
+	loadPattern(filename2, patternLibrary, patternCount); // id 2 → sólido 3D
+	loadPattern(filename3, patternLibrary, patternCount); // id 3 → imagen B
+	loadPattern(filename4, patternLibrary, patternCount); // id 4 → botón
+	loadPattern(filename5, patternLibrary, patternCount); // id 5 → libre / extra3
+	loadPattern(filename6, patternLibrary, patternCount); // id 6 → imagen cayendo (extra3)
+	loadPattern(filename7, patternLibrary, patternCount); // id 7 → dígitos 0–9 (extra4)
+
 	cout << patternCount << " patterns are loaded." << endl;
 	
 
